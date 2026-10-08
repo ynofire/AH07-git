@@ -1,0 +1,84 @@
+# 1. Git / GitHub
+- Git & GitHub를 사용해야하는 이유
+  - 버전 관리·협업 목적. 언제·누가·무엇 변경 기록, 과거 상태 복구 가능.
+  - 파일 복사 방식 한계 해소. final_v2·진짜최종 증가, 최신 판단 곤란 문제 해결.
+  - 변경 이력·책임 명확화. 동시 작업 충돌 확인·해결 가능.
+  - 터미널 CLI 기반 작업 흐름과 연결. 빠른 처리 가능.
+- Git과 GitHub의 차이
+  - Git: 버전 관리 엔진. 로컬 동작 프로그램. Commit·Branch·Merge 담당.
+  - GitHub: 협업·공유 서비스. 원격 저장소 호스팅, Pull Request·Issue·Review 제공.
+  - 관계: Git 로컬 작업 → GitHub 원격 공유 순서.
+- Repository
+  - 파일+변경 이력 관리 저장소. 프로젝트 전체·버전 기록 포함.
+  - 구분: 로컬 Repository / 원격 Repository. push·pull 동기화, 백업·협업 기준점 역할.
+  - 생성: 로컬은 폴더 이동 후 git init, .git 생성 기준. 원격은 GitHub 새 Repository 생성 후 URL 발급.
+  - 복사: git clone URL. push 권한 보유 시 팀 내부 협업용. Fork는 타인 저장소 내 계정 복사, 권한 없을 시 오픈소스 기여용.
+- Commit
+  - 변경 사항 저장 단위. 하나의 버전 해당. 프로젝트 특정 시점 저장.
+  - 되돌림 기준점 역할. 게임 save file 비유.
+  - 메시지 규칙: 명확·간결 작성, 동사 시작, 한 커밋=한 작업 원칙. 예시: Add login API, Fix password validation bug, Refactor user service.
+  - 예시: git commit -m "회원가입 기능 추가".
+- Branch
+  - 독립 작업 공간. 기존 코드 영향 없이 기능·실험·수정 진행 가능. 병렬 개발용.
+  - 완료 후 병합 방식. 협업·안정 배포 관리 핵심.
+  - 관련 개념: HEAD 현재 위치 포인터, Working Directory 실제 작업 공간, Staging Area 다음 커밋 선별 공간.
+  - 예시: git branch feature/login 생성, git switch feature/login 전환.
+
+# 2.  git 기본 명령어
+- git config
+  - 기본 동작 설정 명령어. 최초 1회 등록 목적.
+  - 전역: 모든 저장소 적용. git config --global user.name "홍길동", git config --global user.email "hong@example.com".
+  - 로컬: 특정 저장소 적용. 회사·개인 구분용. git config user.name "홍길동" 형태.
+- git init
+  - 현재 폴더 Repository 초기화 명령어. .git 생성 기준.
+  - 로컬 관리 시작점. 예시: git init 후 echo "hello" > test.txt 흐름.
+- git status
+  - 상태 확인 명령어. 수정 파일·스테이징 여부·커밋 가능 변경 표시 목적.
+  - Untracked / Modified / Staged 구분 확인 가능.
+- git add
+  - Staging Area 추가 명령어. Commit 대상 선별 단계. Commit 생성 아님.
+  - 예시: git add 파일명 / git add . 전체 추가.
+  - 주의: .gitignore 제외 파일 지정용. .env·__pycache__/·*.log 예시. 기추적 파일은 git rm --cached 파일명 필요.
+- git commit
+  - Staged 변경 버전 기록 명령어. 로컬 이력 생성 기준.
+  - 예시: git commit -m "커밋 메시지". 수정 시 git commit --amend, 메시지 유지 시 --no-edit 추가.
+- git push
+  - 로컬 Commit 원격 전송 명령어. 공유·백업 목적.
+  - 예시: git push -u origin main. 원격 등록은 git remote add origin 원격주소, 확인은 git remote -v.
+- git pull
+  - 원격 변경 로컬 반영 명령어. 최신 동기화 목적.
+  - fetch + merge 결합 동작. 예시: git pull / git pull origin main / git pull upstream main.
+
+# 3. Branch
+- git branch 명령어
+  - 조회: git branch. 로컬 목록 표시. * 현재 위치 표시.
+  - 생성: git branch feature/login, git branch feature/ui 형태.
+  - 전환: git switch branch.
+  - 생성+전환: git switch -c feature/add-my-name.
+  - 삭제: git branch -d branch.
+  - 병합: git merge feature/ui. 현재 브랜치로 타 브랜치 내용 결합.
+- 브랜치 관리(main, develop, feature, hotfix, release)
+  - main: 배포 가능 안정 버전. 직접 작업 금지 원칙.
+  - develop / dev: 개발 기능 테스트·통합 버전.
+  - feature/*: 기능 개발용. develop 분기 → develop 병합 흐름.
+  - release: 배포 준비·품질 안정화용. 테스트·버그 수정 중심.
+  - hotfix/*: 긴급 수정용. main 분기 → main·develop 병합 흐름.
+  - 협업 흐름: Issue 생성 → Fork / Clone → upstream 연결 → 브랜치 생성 → push → Pull Request → Code Review → 병합 순서.
+- Fast-forward
+  - 직선 연결 시 포인터 이동 방식 병합. 추가 Commit 없이 히스토리 직선 유지.
+  - 조건: 대상 변경 없이 분기 진행 시 가능.
+- 3-way merge
+  - 분기 후 합류 시 공통 조상 기준 3점 비교 병합. 병합 Commit 생성 형태.
+  - 기준: 분기 없음 → Fast-forward, 분기 있음 → 3-way 구분.
+- Merge conflict
+  - 동일 파일 동일 부분 상이 변경 시 자동 병합 불가 상태. 판단 필요 시에만 알림.
+  - 처리: 충돌 파일 확인 → 직접 수정 → git add → 새 커밋 생성 순서.
+  - 마커 구분: <<<<<<< / ======= / >>>>>>> 형태.
+  - 실습 예시: test.txt를 feature·main에서 각각 수정 후 git merge feature 시도 → cat test.txt 확인 → vi 수정 → git commit -am "resolve merge conflict" → git log --oneline --graph 확인.
+
+
+# 4. HTML
+- HTML
+  - Head : 문서의 타이틀에 해당
+  - Body : 실제 창에 나타나는 본문
+  - H1 : 강조, 마크다운으로 치면 #에 해당
